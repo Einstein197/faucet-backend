@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Watch Ad to Unlock Faucet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            text-align: center;
+            padding: 40px;
+        }
+        .box {
+            background: #161b22;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 450px;
+            margin: auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+        button {
+            background: #238636;
+            border: none;
+            padding: 12px 20px;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #2ea043;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>📺 Watch an Ad to Unlock Faucet</h2>
+    <p>Your faucet reward will unlock after completing the ad.</p>
+
+    <!-- PLACE YOUR REAL AD NETWORK SCRIPT HERE -->
+    <!-- Example placeholder -->
+    <div style="background:#222;padding:20px;border-radius:8px;margin-top:20px;">
+        <p>Ad placeholder — insert AdSense / Adsterra / PropellerAds script here.</p>
+    </div>
+
+    <button onclick="finishAd()">I Watched the Ad</button>
+
+    <p id="status" style="margin-top:20px;"></p>
+</div>
+
+<script>
+    // Extract user_id from URL (?user_id=123)
+    const urlParams = new URLSearchParams(window.location.search);
+    const user_id = urlParams.get("user_id");
+
+    if (!user_id) {
+        document.getElementById("status").innerText = "❌ Error: Missing user_id in URL.";
+    }
+
+    // Your backend domain (change this!)
+    const BACKEND = "https://your-backend.com";
+
+    async function finishAd() {
+        if (!user_id) return;
+
+        // First: request a session token
+        const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
+        if (!start.ok) {
+            document.getElementById("status").innerText = "❌ Failed to start ad session.";
+            return;
+        }
+
+        const html = await start.text();
+
+        // Extract session token from returned HTML
+        const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
+        if (!match) {
+            document.getElementById("status").innerText = "❌ Could not read session token.";
+            return;
+        }
+
+        const session = match[1];
+
+        // Complete the ad
+        const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
+
+        if (res.ok) {
+            document.getElementById("status").innerText =
+                "✅ Ad completed! Return to Discord and run /faucet again.";
+        } else {
+            document.getElementById("status").innerText =
+                "❌ Error completing ad. Try again.";
+        }
+    }
+</script>
+
+</body>
+</html>
