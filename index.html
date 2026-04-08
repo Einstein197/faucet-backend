@@ -40,7 +40,7 @@
     <h2>📺 Watch an Ad to Unlock Faucet</h2>
     <p>Your faucet reward will unlock after completing the ad.</p>
 
-    <!-- PLACE YOUR REAL AD NETWORK SCRIPT HERE -->
+    <!-- ⭐ INSERT YOUR REAL AD NETWORK SCRIPT HERE ⭐ -->
     <!-- Example placeholder -->
     <div style="background:#222;padding:20px;border-radius:8px;margin-top:20px;">
         <p>Ad placeholder — insert AdSense / Adsterra / PropellerAds script here.</p>
@@ -60,13 +60,13 @@
         document.getElementById("status").innerText = "❌ Error: Missing user_id in URL.";
     }
 
-    // Your backend domain (change this!)
+    // ⭐ CHANGE THIS TO YOUR REAL BACKEND URL ⭐
     const BACKEND = "https://your-backend.com";
 
     async function finishAd() {
         if (!user_id) return;
 
-        // First: request a session token
+        // Step 1: Start ad session
         const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
         if (!start.ok) {
             document.getElementById("status").innerText = "❌ Failed to start ad session.";
@@ -75,7 +75,7 @@
 
         const html = await start.text();
 
-        // Extract session token from returned HTML
+        // Step 2: Extract session token from backend HTML
         const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
         if (!match) {
             document.getElementById("status").innerText = "❌ Could not read session token.";
@@ -84,7 +84,7 @@
 
         const session = match[1];
 
-        // Complete the ad
+        // Step 3: Complete the ad
         const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
 
         if (res.ok) {
