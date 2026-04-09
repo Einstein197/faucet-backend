@@ -1,10 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import secrets
 import time
 
 app = FastAPI()
+
+# ⭐ CORS FIX — allows GitHub Pages to call your backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://einstein197.github.io"],  # your GitHub Pages domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DB = "ad_sessions.db"
 
