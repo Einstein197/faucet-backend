@@ -40,11 +40,8 @@
     <h2>📺 Watch an Ad to Unlock Faucet</h2>
     <p>Your faucet reward will unlock after completing the ad.</p>
 
+    <!-- ⭐ ADSTERRA SOCIAL BAR ⭐ -->
     <script src="https://pl29102068.profitablecpmratenetwork.com/32/0d/48/320d48c8bb8374ee6f11a808a2d04cf2.js"></script>
-
-    <div style="background:#222;padding:20px;border-radius:8px;margin-top:20px;">
-        <p>Ad placeholder — insert AdSense / Adsterra / PropellerAds script here.</p>
-    </div>
 
     <button onclick="finishAd()">I Watched the Ad</button>
 
@@ -60,7 +57,7 @@
         document.getElementById("status").innerText = "❌ Error: Missing user_id in URL.";
     }
 
-    // ⭐ CHANGE THIS TO YOUR REAL BACKEND URL ⭐
+    // Your backend URL
     const BACKEND = "https://faucet-backend-uvzt.onrender.com";
 
     async function finishAd() {
@@ -75,7 +72,7 @@
 
         const html = await start.text();
 
-        // Step 2: Extract session token from backend HTML
+        // Step 2: Extract session token
         const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
         if (!match) {
             document.getElementById("status").innerText = "❌ Could not read session token.";
