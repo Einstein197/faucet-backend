@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import secrets
@@ -33,6 +34,8 @@ def init_db():
     conn.close()
 
 init_db()
+
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 @app.get("/ad", response_class=HTMLResponse)
 def ad_page(user_id: str):
