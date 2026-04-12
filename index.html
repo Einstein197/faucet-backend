@@ -5,7 +5,7 @@
     <title>Watch Ad to Unlock Faucet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- PNG Favicon -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="krypton.png">
 
     <style>
@@ -104,33 +104,27 @@
     <p>Your faucet reward will unlock after completing the ad.</p>
 
     <!-- A-ADS AD UNIT -->
-    <div id="frame">
-        <iframe data-aa="2433694"
-                src="//acceptable.a-ads.com/2433694/?size=Adaptive"
-                style="border:0; padding:0; overflow:hidden;">
-        </iframe>
-    </div>
+    <iframe data-aa="2433694"
+            src="//acceptable.a-ads.com/2433694/?size=Adaptive"
+            style="border:0; padding:0; overflow:hidden;">
+    </iframe>
 
-    <!-- BUTTON STARTS DISABLED -->
-    
     <p style="font-size:14px; opacity:0.75;">
-After you click the button, this page will open Discord automatically.
-</p>
+        After you click the button, this page will open Discord automatically.
+    </p>
+
     <button id="adButton" disabled>⏳ Please wait 20 seconds...</button>
 
     <p id="status"></p>
 </div>
 
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
     const user_id = "{{USER_ID}}";
-
+    const BACKEND = "https://faucet-backend-uvzt.onrender.com";
 
     if (!user_id) {
-        document.getElementById("status").innerText = "❌ Error: Missing user_id in URL.";
+        document.getElementById("status").innerText = "❌ Error: Missing user_id.";
     }
-
-    const BACKEND = "https://faucet-backend-uvzt.onrender.com";
 
     // -----------------------------
     // 20 SECOND LOCKOUT TIMER
@@ -154,40 +148,38 @@ After you click the button, this page will open Discord automatically.
     // FINISH AD FUNCTION
     // -----------------------------
     async function finishAd() {
-    if (!user_id) return;
+        if (!user_id) return;
 
-    const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
-    if (!start.ok) {
-        document.getElementById("status").innerText = "❌ Failed to start ad session.";
-        return;
+        const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
+        if (!start.ok) {
+            document.getElementById("status").innerText = "❌ Failed to start ad session.";
+            return;
+        }
+
+        const html = await start.text();
+        const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
+
+        if (!match) {
+            document.getElementById("status").innerText = "❌ Could not read session token.";
+            return;
+        }
+
+        const session = match[1];
+        const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
+
+        if (res.ok) {
+            document.getElementById("status").innerText =
+                "✅ Ad completed! Returning to Discord...";
+
+            setTimeout(() => {
+                window.location.href = "discord://";
+            }, 1000);
+
+        } else {
+            document.getElementById("status").innerText =
+                "❌ Error completing ad. Try again.";
+        }
     }
-
-    const html = await start.text();
-    const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
-
-    if (!match) {
-        document.getElementById("status").innerText = "❌ Could not read session token.";
-        return;
-    }
-
-    const session = match[1];
-    const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
-
-    if (res.ok) {
-        document.getElementById("status").innerText =
-            "✅ Ad completed! Returning to Discord...";
-
-        // AUTO-OPEN DISCORD AFTER 1 SECOND
-        setTimeout(() => {
-            window.location.href = "discord://";
-        }, 1000);
-
-    } else {
-        document.getElementById("status").innerText =
-            "❌ Error completing ad. Try again.";
-    }
-}
-
 </script>
 
 </body>
