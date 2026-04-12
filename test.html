@@ -112,10 +112,6 @@
     </div>
 
     <!-- BUTTON STARTS DISABLED -->
-    
-    <p style="font-size:14px; opacity:0.75;">
-After you click the button, this page will open Discord automatically.
-</p>
     <button id="adButton" disabled>⏳ Please wait 20 seconds...</button>
 
     <p id="status"></p>
@@ -123,8 +119,7 @@ After you click the button, this page will open Discord automatically.
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const user_id = "{{USER_ID}}";
-
+    const user_id = urlParams.get("user_id");
 
     if (!user_id) {
         document.getElementById("status").innerText = "❌ Error: Missing user_id in URL.";
@@ -154,40 +149,33 @@ After you click the button, this page will open Discord automatically.
     // FINISH AD FUNCTION
     // -----------------------------
     async function finishAd() {
-    if (!user_id) return;
+        if (!user_id) return;
 
-    const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
-    if (!start.ok) {
-        document.getElementById("status").innerText = "❌ Failed to start ad session.";
-        return;
+        const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
+        if (!start.ok) {
+            document.getElementById("status").innerText = "❌ Failed to start ad session.";
+            return;
+        }
+
+        const html = await start.text();
+        const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
+
+        if (!match) {
+            document.getElementById("status").innerText = "❌ Could not read session token.";
+            return;
+        }
+
+        const session = match[1];
+        const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
+
+        if (res.ok) {
+            document.getElementById("status").innerText =
+                "✅ Ad completed! Return to Discord and run /faucet again.";
+        } else {
+            document.getElementById("status").innerText =
+                "❌ Error completing ad. Try again.";
+        }
     }
-
-    const html = await start.text();
-    const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
-
-    if (!match) {
-        document.getElementById("status").innerText = "❌ Could not read session token.";
-        return;
-    }
-
-    const session = match[1];
-    const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
-
-    if (res.ok) {
-        document.getElementById("status").innerText =
-            "✅ Ad completed! Returning to Discord...";
-
-        // AUTO-OPEN DISCORD AFTER 1 SECOND
-        setTimeout(() => {
-            window.location.href = "discord://";
-        }, 1000);
-
-    } else {
-        document.getElementById("status").innerText =
-            "❌ Error completing ad. Try again.";
-    }
-}
-
 </script>
 
 </body>
