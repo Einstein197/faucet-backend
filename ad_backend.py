@@ -37,7 +37,7 @@ init_db()
 @app.get("/ad", response_class=HTMLResponse)
 def ad_page(user_id: str):
     try:
-        with open("ad_page.html", "r", encoding="utf-8") as f:
+        with open("index.html", "r", encoding="utf-8") as f:
             html = f.read()
         # Inject user_id into the page
         html = html.replace("{{USER_ID}}", user_id)
