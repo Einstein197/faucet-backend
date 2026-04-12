@@ -37,6 +37,18 @@ init_db()
 
 app.mount("/static", StaticFiles(directory="."), name="static")
 
+@app.get("/ad_preview", response_class=HTMLResponse)
+def ad_preview():
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            html = f.read()
+        # Replace USER_ID with a dummy value
+        html = html.replace("{{USER_ID}}", "preview")
+        return HTMLResponse(content=html)
+    except Exception as e:
+        return HTMLResponse(content=f"Error loading preview page: {e}", status_code=500)
+
+
 @app.get("/ad", response_class=HTMLResponse)
 def ad_page(user_id: str):
     try:
