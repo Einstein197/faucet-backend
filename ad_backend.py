@@ -34,6 +34,17 @@ def init_db():
 
 init_db()
 
+@app.get("/ad", response_class=HTMLResponse)
+def ad_page(user_id: str):
+    try:
+        with open("ad_page.html", "r", encoding="utf-8") as f:
+            html = f.read()
+        # Inject user_id into the page
+        html = html.replace("{{USER_ID}}", user_id)
+        return HTMLResponse(content=html)
+    except Exception as e:
+        return HTMLResponse(content=f"Error loading ad page: {e}", status_code=500)
+
 @app.get("/start_ad", response_class=HTMLResponse)
 def start_ad(user_id: str):
     session_token = secrets.token_urlsafe(16)
