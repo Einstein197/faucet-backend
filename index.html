@@ -111,17 +111,8 @@
             margin-top: 18px;
             font-size: 15px;
         }
-
-        /* 📱 MOBILE: HIDE ADSTERRA COMPLETELY */
-        @media (max-width: 768px) {
-            .adsterra-block {
-                display: none !important;
-            }
-        }
     </style>
 </head>
-
-<!-- REDIRECT SHIELD -->
 <script>
 (function() {
     const blockRedirect = (prop) => {
@@ -137,9 +128,13 @@
         } catch (e) {}
     };
 
+    // Save originals
     window.__location = window.location;
+
+    // Block common redirect vectors
     blockRedirect("location");
 
+    // Block top-level redirect attempts
     try {
         Object.defineProperty(top, "location", {
             configurable: false,
@@ -148,6 +143,7 @@
         });
     } catch (e) {}
 
+    // Block window.open hijacks
     const originalOpen = window.open;
     window.open = function(url) {
         console.warn("Blocked window.open redirect:", url);
@@ -178,7 +174,7 @@
         <iframe data-aa="2433694" src="//acceptable.a-ads.com/2433694/?size=Adaptive"></iframe>
     </div>
 
-    <!-- ADSTERRA (HIDDEN ON MOBILE) -->
+    <!-- ADSTERRA -->
     <div class="adsterra-block">
         <script async data-cfasync="false" src="https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js"></script>
         <div id="container-1b29b818614dfdaded3b47b2f2ee7524"></div>
@@ -191,7 +187,7 @@
 
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN CONTENT (NO BOX) -->
 <div class="main-content-wrapper">
     <p class="main-content-text">
         After clicking the button, this page will return you to Discord automatically.
@@ -209,6 +205,7 @@
     let seconds = 20;
     const btn = document.getElementById("adButton");
 
+    /* TIMER ALWAYS WORKS — EVEN LOCALLY */
     const timer = setInterval(() => {
         seconds--;
         btn.innerText = `⏳ Please wait ${seconds} seconds...`;
