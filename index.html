@@ -53,7 +53,7 @@
             font-size: 15px;
         }
 
-        /* ADSTERRA + SIDE ADS ROW */
+        /* AD ROW */
         .ad-row {
             display: grid;
             grid-template-columns: 180px auto 180px;
@@ -76,7 +76,7 @@
             text-align: center;
         }
 
-        /* MAIN CONTENT (NO BOX) */
+        /* MAIN CONTENT */
         .main-content-wrapper {
             width: 100%;
             max-width: 700px;
@@ -111,46 +111,64 @@
             margin-top: 18px;
             font-size: 15px;
         }
+
+        /* 📱 MOBILE OPTIMIZATION */
+        @media (max-width: 768px) {
+            .ad-row {
+                display: none !important;
+            }
+
+            .corner-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .header {
+                margin-top: 80px;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
     </style>
-</head>
-<script>
-(function() {
-    const blockRedirect = (prop) => {
+
+    <!-- REDIRECT SHIELD (CORRECTLY PLACED INSIDE <head>) -->
+    <script>
+    (function() {
+        const blockRedirect = (prop) => {
+            try {
+                Object.defineProperty(window, prop, {
+                    configurable: false,
+                    enumerable: true,
+                    get() { return window[`__${prop}`]; },
+                    set(v) {
+                        console.warn("Blocked redirect attempt:", prop, v);
+                    }
+                });
+            } catch (e) {}
+        };
+
+        window.__location = window.location;
+        blockRedirect("location");
+
         try {
-            Object.defineProperty(window, prop, {
+            Object.defineProperty(top, "location", {
                 configurable: false,
-                enumerable: true,
-                get() { return window[`__${prop}`]; },
-                set(v) {
-                    console.warn("Blocked redirect attempt:", prop, v);
-                }
+                get() { return window.__location; },
+                set(v) { console.warn("Blocked top redirect:", v); }
             });
         } catch (e) {}
-    };
 
-    // Save originals
-    window.__location = window.location;
+        const originalOpen = window.open;
+        window.open = function(url) {
+            console.warn("Blocked window.open redirect:", url);
+            return null;
+        };
+    })();
+    </script>
 
-    // Block common redirect vectors
-    blockRedirect("location");
-
-    // Block top-level redirect attempts
-    try {
-        Object.defineProperty(top, "location", {
-            configurable: false,
-            get() { return window.__location; },
-            set(v) { console.warn("Blocked top redirect:", v); }
-        });
-    } catch (e) {}
-
-    // Block window.open hijacks
-    const originalOpen = window.open;
-    window.open = function(url) {
-        console.warn("Blocked window.open redirect:", url);
-        return null;
-    };
-})();
-</script>
+</head>
 
 <body>
 
@@ -166,18 +184,17 @@
     <p>Your faucet reward unlocks after completing the ad.</p>
 </div>
 
-<!-- ADSTERRA WITH A‑ADS ON BOTH SIDES -->
-<div class="ad-row">
+<!-- AD ROW (DESKTOP ONLY) -->
+<div class="ad-row" id="adRow">
 
     <!-- LEFT A‑ADS -->
     <div class="side-ads">
         <iframe data-aa="2433694" src="//acceptable.a-ads.com/2433694/?size=Adaptive"></iframe>
     </div>
 
-    <!-- ADSTERRA -->
-    <div class="adsterra-block">
-        <script async data-cfasync="false" src="https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js"></script>
-        <div id="container-1b29b818614dfdaded3b47b2f2ee7524"></div>
+    <!-- ADSTERRA (DESKTOP ONLY) -->
+    <div class="adsterra-block" id="adsterraContainer">
+        <!-- Adsterra injected here only on desktop -->
     </div>
 
     <!-- RIGHT A‑ADS -->
@@ -187,7 +204,7 @@
 
 </div>
 
-<!-- MAIN CONTENT (NO BOX) -->
+<!-- MAIN CONTENT -->
 <div class="main-content-wrapper">
     <p class="main-content-text">
         After clicking the button, this page will return you to Discord automatically.
@@ -198,6 +215,22 @@
     <p id="status"></p>
 </div>
 
+<!-- DESKTOP‑ONLY ADSTERRA LOADER -->
+<script>
+(function() {
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+        const container = document.getElementById("adsterraContainer");
+        container.innerHTML = `
+            <script async data-cfasync="false" src="https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js"><\/script>
+            <div id="container-1b29b818614dfdaded3b47b2f2ee7524"></div>
+        `;
+    }
+})();
+</script>
+
+<!-- BACKEND LOGIC -->
 <script>
     const user_id = "{{USER_ID}}";
     const BACKEND = "https://faucet-backend-uvzt.onrender.com";
@@ -205,7 +238,6 @@
     let seconds = 20;
     const btn = document.getElementById("adButton");
 
-    /* TIMER ALWAYS WORKS — EVEN LOCALLY */
     const timer = setInterval(() => {
         seconds--;
         btn.innerText = `⏳ Please wait ${seconds} seconds...`;
