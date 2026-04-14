@@ -112,9 +112,10 @@
             font-size: 15px;
         }
 
-        /* 📱 MOBILE: SAFE BANNER + A‑ADS */
+        /* 📱 MOBILE: SHOW A‑ADS, HIDE ADSTERRA */
         @media (max-width: 768px) {
 
+            /* Collapse layout */
             .ad-row {
                 display: grid;
                 grid-template-columns: 1fr;
@@ -123,14 +124,15 @@
                 margin-top: 20px;
             }
 
-            /* Hide desktop Adsterra popunder */
-            .adsterra-block.desktop {
+            /* Hide Adsterra only */
+            .adsterra-block {
                 display: none !important;
             }
 
-            /* Show safe mobile banner */
-            .adsterra-block.mobile {
-                display: block !important;
+            /* A‑Ads stay visible */
+            .side-ads iframe {
+                width: 100%;
+                height: auto;
             }
 
             .corner-logo {
@@ -144,13 +146,6 @@
 
             body {
                 padding: 10px;
-            }
-        }
-
-        /* DESKTOP: hide mobile banner */
-        @media (min-width: 769px) {
-            .adsterra-block.mobile {
-                display: none !important;
             }
         }
     </style>
@@ -214,17 +209,8 @@
         <iframe data-aa="2433694" src="//acceptable.a-ads.com/2433694/?size=Adaptive"></iframe>
     </div>
 
-    <!-- ADSTERRA DESKTOP POPUNDER -->
-    <div class="adsterra-block desktop" id="adsterraDesktop"></div>
-
-    <!-- ADSTERRA SAFE MOBILE BANNER -->
-    <div class="adsterra-block mobile" id="adsterraMobile">
-        <iframe 
-            src="/ads/adsterra_banner.html"
-            sandbox="allow-scripts allow-same-origin"
-            style="width:300px;height:250px;border:none;overflow:hidden;">
-        </iframe>
-    </div>
+    <!-- ADSTERRA (DESKTOP ONLY) -->
+    <div class="adsterra-block" id="adsterraContainer"></div>
 
     <!-- RIGHT A‑ADS -->
     <div class="side-ads">
@@ -244,13 +230,13 @@
     <p id="status"></p>
 </div>
 
-<!-- DESKTOP‑ONLY ADSTERRA POPUNDER LOADER -->
+<!-- DESKTOP‑ONLY ADSTERRA LOADER (FIXED) -->
 <script>
 (function() {
     const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
     if (!isMobile) {
-        const container = document.getElementById("adsterraDesktop");
+        const container = document.getElementById("adsterraContainer");
 
         const s = document.createElement("script");
         s.async = true;
