@@ -112,10 +112,27 @@
             font-size: 15px;
         }
 
-        /* 📱 MOBILE OPTIMIZATION */
+        /* 📱 MOBILE: SHOW A‑ADS, HIDE ADSTERRA */
         @media (max-width: 768px) {
+
+            /* Collapse layout */
             .ad-row {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                max-width: 350px;
+                margin-top: 20px;
+            }
+
+            /* Hide Adsterra only */
+            .adsterra-block {
                 display: none !important;
+            }
+
+            /* A‑Ads stay visible */
+            .side-ads iframe {
+                width: 100%;
+                height: auto;
             }
 
             .corner-logo {
@@ -133,7 +150,7 @@
         }
     </style>
 
-    <!-- REDIRECT SHIELD (CORRECTLY PLACED INSIDE <head>) -->
+    <!-- REDIRECT SHIELD -->
     <script>
     (function() {
         const blockRedirect = (prop) => {
@@ -184,7 +201,7 @@
     <p>Your faucet reward unlocks after completing the ad.</p>
 </div>
 
-<!-- AD ROW (DESKTOP ONLY) -->
+<!-- AD ROW -->
 <div class="ad-row" id="adRow">
 
     <!-- LEFT A‑ADS -->
@@ -193,9 +210,7 @@
     </div>
 
     <!-- ADSTERRA (DESKTOP ONLY) -->
-    <div class="adsterra-block" id="adsterraContainer">
-        <!-- Adsterra injected here only on desktop -->
-    </div>
+    <div class="adsterra-block" id="adsterraContainer"></div>
 
     <!-- RIGHT A‑ADS -->
     <div class="side-ads">
@@ -215,17 +230,24 @@
     <p id="status"></p>
 </div>
 
-<!-- DESKTOP‑ONLY ADSTERRA LOADER -->
+<!-- DESKTOP‑ONLY ADSTERRA LOADER (FIXED) -->
 <script>
 (function() {
     const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
     if (!isMobile) {
         const container = document.getElementById("adsterraContainer");
-        container.innerHTML = `
-            <script async data-cfasync="false" src="https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js"><\/script>
-            <div id="container-1b29b818614dfdaded3b47b2f2ee7524"></div>
-        `;
+
+        const s = document.createElement("script");
+        s.async = true;
+        s.setAttribute("data-cfasync", "false");
+        s.src = "https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js";
+
+        const d = document.createElement("div");
+        d.id = "container-1b29b818614dfdaded3b47b2f2ee7524";
+
+        container.appendChild(s);
+        container.appendChild(d);
     }
 })();
 </script>
