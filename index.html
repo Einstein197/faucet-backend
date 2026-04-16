@@ -67,6 +67,7 @@
         .side-ads iframe {
             width: 100%;
             border: none;
+            display: block;
         }
 
         .adsterra-block {
@@ -112,27 +113,17 @@
             font-size: 15px;
         }
 
-        /* 📱 MOBILE: SHOW A‑ADS, HIDE ADSTERRA */
+        /* MOBILE */
         @media (max-width: 768px) {
-
-            /* Collapse layout */
             .ad-row {
-                display: grid;
                 grid-template-columns: 1fr;
                 gap: 15px;
                 max-width: 350px;
                 margin-top: 20px;
             }
 
-            /* Hide Adsterra only */
             .adsterra-block {
                 display: none !important;
-            }
-
-            /* A‑Ads stay visible */
-            .side-ads iframe {
-                width: 100%;
-                height: auto;
             }
 
             .corner-logo {
@@ -159,9 +150,7 @@
                     configurable: false,
                     enumerable: true,
                     get() { return window[`__${prop}`]; },
-                    set(v) {
-                        console.warn("Blocked redirect attempt:", prop, v);
-                    }
+                    set(v) { console.warn("Blocked redirect attempt:", prop, v); }
                 });
             } catch (e) {}
         };
@@ -202,11 +191,13 @@
 </div>
 
 <!-- AD ROW -->
-<div class="ad-row" id="adRow">
+<div class="ad-row">
 
     <!-- LEFT A‑ADS -->
     <div class="side-ads">
-        <iframe data-aa="2433694" src="//acceptable.a-ads.com/2433694/?size=Adaptive"></iframe>
+        <iframe data-aa="2434416"
+            src="https://acceptable.a-ads.com/2434416?size=Adaptive">
+        </iframe>
     </div>
 
     <!-- ADSTERRA (DESKTOP ONLY) -->
@@ -214,7 +205,9 @@
 
     <!-- RIGHT A‑ADS -->
     <div class="side-ads">
-        <iframe data-aa="2434032" src="//acceptable.a-ads.com/2434032/?size=Adaptive"></iframe>
+        <iframe data-aa="2434032"
+            src="https://acceptable.a-ads.com/2434032?size=Adaptive">
+        </iframe>
     </div>
 
 </div>
@@ -230,7 +223,7 @@
     <p id="status"></p>
 </div>
 
-<!-- DESKTOP‑ONLY ADSTERRA LOADER (FIXED) -->
+<!-- DESKTOP‑ONLY ADSTERRA LOADER -->
 <script>
 (function() {
     const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
