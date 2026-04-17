@@ -1,309 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Watch Ad to Unlock Faucet</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="icon" type="image/png" href="/static/krypton.png">
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(145deg, #1a0f00, #ff7a18);
-            font-family: "Inter", Arial, sans-serif;
-            color: #e6edf3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* CORNER LOGOS */
-        .corner-logo {
-            position: fixed;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            z-index: 9999;
-        }
-
-        .tl { top: 15px; left: 15px; }
-        .tr { top: 15px; right: 15px; }
-        .bl { bottom: 15px; left: 15px; }
-        .br { bottom: 15px; right: 15px; }
-
-        /* HEADER */
-        .header {
-            margin-top: 120px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .header p {
-            margin-top: 8px;
-            opacity: 0.75;
-            font-size: 15px;
-        }
-
-        /* AD ROW */
-        .ad-row {
-            display: grid;
-            grid-template-columns: 180px auto 180px;
-            gap: 20px;
-            width: 100%;
-            max-width: 1400px;
-            margin-top: 40px;
-            align-items: center;
-        }
-
-        .side-ads iframe {
-            width: 100%;
-            border: none;
-            display: block;
-        }
-
-        .adsterra-block {
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        /* MAIN CONTENT */
-        .main-content-wrapper {
-            width: 100%;
-            max-width: 700px;
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        .main-content-text {
-            font-size: 14px;
-            opacity: 0.75;
-            margin-bottom: 16px;
-        }
-
-        button {
-            background: #238636;
-            border: none;
-            padding: 14px 22px;
-            color: white;
-            font-size: 17px;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            max-width: 260px;
-        }
-
-        button:disabled {
-            background: #30363d;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 18px;
-            font-size: 15px;
-        }
-
-        /* MOBILE */
-        @media (max-width: 768px) {
-            .ad-row {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                max-width: 350px;
-                margin-top: 20px;
-            }
-
-            .adsterra-block {
-                display: none !important;
-            }
-
-            .corner-logo {
-                width: 60px;
-                height: 60px;
-            }
-
-            .header {
-                margin-top: 80px;
-            }
-
-            body {
-                padding: 10px;
-            }
-        }
-    </style>
-
-    <!-- REDIRECT SHIELD -->
-    <script>
-    (function() {
-        const blockRedirect = (prop) => {
-            try {
-                Object.defineProperty(window, prop, {
-                    configurable: false,
-                    enumerable: true,
-                    get() { return window[`__${prop}`]; },
-                    set(v) { console.warn("Blocked redirect attempt:", prop, v); }
-                });
-            } catch (e) {}
-        };
-
-        window.__location = window.location;
-        blockRedirect("location");
-
-        try {
-            Object.defineProperty(top, "location", {
-                configurable: false,
-                get() { return window.__location; },
-                set(v) { console.warn("Blocked top redirect:", v); }
-            });
-        } catch (e) {}
-
-        const originalOpen = window.open;
-        window.open = function(url) {
-            console.warn("Blocked window.open redirect:", url);
-            return null;
-        };
-    })();
-    </script>
-
+  <meta charset="UTF-8" />
+  <title>KryptonLegend Faucet</title>
+  <style>
+    body { font-family: system-ui; background: #050816; color: #f5f5f5; display:flex; align-items:center; justify-content:center; height:100vh; }
+    .card { background:#0b1020; padding:24px 28px; border-radius:16px; box-shadow:0 0 40px rgba(0,0,0,0.6); width:320px; text-align:center; }
+    button { margin-top:16px; padding:10px 16px; border-radius:999px; border:none; background:#ff7a1a; color:#000; font-weight:600; cursor:pointer; }
+    button:disabled { opacity:0.5; cursor:default; }
+    .status { margin-top:12px; font-size:14px; opacity:0.8; }
+  </style>
 </head>
-
 <body>
+  <div class="card">
+    <h2>KryptonLegend Faucet</h2>
+    <p>Watch a short video ad to unlock your claim.</p>
+    <input id="userId" placeholder="Enter your Discord ID" style="width:100%;padding:8px;border-radius:8px;border:none;margin-top:8px;">
+    <button id="watchBtn">Watch Ad</button>
+    <div class="status" id="status"></div>
+  </div>
 
-<!-- CORNER LOGOS -->
-<img src="/static/krypton.png" class="corner-logo tl">
-<img src="/static/krypton.png" class="corner-logo tr">
-<img src="/static/krypton.png" class="corner-logo bl">
-<img src="/static/krypton.png" class="corner-logo br">
+  <script>
+    const BACKEND = "https://faucet-backend-uvzt.onrender.com"; // change if needed
+    const watchBtn = document.getElementById("watchBtn");
+    const statusEl = document.getElementById("status");
+    const userInput = document.getElementById("userId");
 
-<!-- HEADER -->
-<div class="header">
-    <h1>📺 Watch an Ad to Unlock Faucet</h1>
-    <p>Your faucet reward unlocks after completing the ad.</p>
-</div>
+    watchBtn.onclick = async () => {
+      const userId = userInput.value.trim();
+      if (!userId) {
+        statusEl.textContent = "Enter your Discord ID first.";
+        return;
+      }
 
-<!-- AD ROW -->
-<div class="ad-row">
+      watchBtn.disabled = true;
+      statusEl.textContent = "Starting ad session...";
 
-    <!-- LEFT A‑ADS -->
-    <div class="side-ads">
-        <iframe data-aa="2434416"
-            src="https://acceptable.a-ads.com/2434416?size=Adaptive">
-        </iframe>
-    </div>
+      try {
+        const res = await fetch(`${BACKEND}/start_ad?user_id=${encodeURIComponent(userId)}`);
+        const data = await res.json();
+        const token = data.session_token;
 
-    <!-- ADSTERRA (DESKTOP ONLY) -->
-    <div class="adsterra-block" id="adsterraContainer"></div>
+        // Example CPALead / video URL – you’ll replace with real one
+        const adUrl = `https://your-ad-network.com/video?subid=${encodeURIComponent(token)}`;
 
-    <!-- RIGHT A‑ADS -->
-    <div class="side-ads">
-        <iframe data-aa="2434032"
-            src="https://acceptable.a-ads.com/2434032?size=Adaptive">
-        </iframe>
-    </div>
-
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="main-content-wrapper">
-    <p class="main-content-text">
-        After clicking the button, this page will return you to Discord automatically.
-    </p>
-
-    <button id="adButton" disabled>⏳ Please wait 20 seconds...</button>
-
-    <p id="status"></p>
-</div>
-
-<!-- DESKTOP‑ONLY ADSTERRA LOADER -->
-<script>
-(function() {
-    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-
-    if (!isMobile) {
-        const container = document.getElementById("adsterraContainer");
-
-        const s = document.createElement("script");
-        s.async = true;
-        s.setAttribute("data-cfasync", "false");
-        s.src = "https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js";
-
-        const d = document.createElement("div");
-        d.id = "container-1b29b818614dfdaded3b47b2f2ee7524";
-
-        container.appendChild(s);
-        container.appendChild(d);
-    }
-})();
-</script>
-
-<!-- BACKEND LOGIC -->
-<script>
-    const user_id = "{{USER_ID}}";
-    const BACKEND = "https://faucet-backend-uvzt.onrender.com";
-
-    let seconds = 20;
-    const btn = document.getElementById("adButton");
-
-    const timer = setInterval(() => {
-        seconds--;
-        btn.innerText = `⏳ Please wait ${seconds} seconds...`;
-
-        if (seconds <= 0) {
-            clearInterval(timer);
-            btn.disabled = false;
-            btn.innerText = "I Watched the Ad";
-        }
-    }, 1000);
-
-    btn.addEventListener("click", finishAd);
-
-    async function finishAd() {
-        btn.disabled = true;
-        btn.innerText = "Processing...";
-
-        try {
-            const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
-            const html = await start.text();
-
-            const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
-            if (!match) {
-                document.getElementById("status").innerText =
-                    "❌ Could not get session token.";
-                btn.disabled = false;
-                btn.innerText = "Try Again";
-                return;
-            }
-
-            const session = match[1];
-            const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
-
-            if (res.ok) {
-                document.getElementById("status").innerText =
-                    "✅ Ad completed! Returning to Discord...";
-                setTimeout(() => window.location.href = "discord://", 1000);
-            } else {
-                document.getElementById("status").innerText =
-                    "❌ Error completing ad.";
-                btn.disabled = false;
-                btn.innerText = "Try Again";
-            }
-        } catch (err) {
-            document.getElementById("status").innerText =
-                "❌ Network error.";
-            btn.disabled = false;
-            btn.innerText = "Try Again";
-        }
-    }
-</script>
-
+        statusEl.textContent = "Opening video ad...";
+        window.location.href = adUrl;
+      } catch (e) {
+        statusEl.textContent = "Error starting ad session.";
+        watchBtn.disabled = false;
+      }
+    };
+  </script>
 </body>
 </html>
