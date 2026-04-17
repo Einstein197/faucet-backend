@@ -2,55 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>KryptonLegend Faucet</title>
+  <title>KryptonLegend — Watch Ad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    body { font-family: system-ui; background: #050816; color: #f5f5f5; display:flex; align-items:center; justify-content:center; height:100vh; }
-    .card { background:#0b1020; padding:24px 28px; border-radius:16px; box-shadow:0 0 40px rgba(0,0,0,0.6); width:320px; text-align:center; }
-    button { margin-top:16px; padding:10px 16px; border-radius:999px; border:none; background:#ff7a1a; color:#000; font-weight:600; cursor:pointer; }
-    button:disabled { opacity:0.5; cursor:default; }
-    .status { margin-top:12px; font-size:14px; opacity:0.8; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #050816;
+      color: #f5f5f5;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .card {
+      background: #0b1020;
+      padding: 28px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #ff7a1a;
+    }
+
+    .loader {
+      margin-top: 20px;
+      border: 4px solid #333;
+      border-top: 4px solid #ff7a1a;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .status {
+      margin-top: 16px;
+      font-size: 15px;
+      opacity: 0.85;
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
     <h2>KryptonLegend Faucet</h2>
-    <p>Watch a short video ad to unlock your claim.</p>
-    <input id="userId" placeholder="Enter your Discord ID" style="width:100%;padding:8px;border-radius:8px;border:none;margin-top:8px;">
-    <button id="watchBtn">Watch Ad</button>
-    <div class="status" id="status"></div>
+    <p>Preparing your video ad…</p>
+    <div class="loader"></div>
+    <div class="status" id="status">Starting session…</div>
   </div>
 
   <script>
-    const BACKEND = "https://faucet-backend-uvzt.onrender.com"; // change if needed
-    const watchBtn = document.getElementById("watchBtn");
+    const BACKEND = "https://faucet-backend-uvzt.onrender.com"; // your backend
     const statusEl = document.getElementById("status");
-    const userInput = document.getElementById("userId");
 
-    watchBtn.onclick = async () => {
-      const userId = userInput.value.trim();
-      if (!userId) {
-        statusEl.textContent = "Enter your Discord ID first.";
-        return;
-      }
+    // Read ?uid= from URL
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("uid");
 
-      watchBtn.disabled = true;
-      statusEl.textContent = "Starting ad session...";
+    if (!userId) {
+      statusEl.textContent = "Error: No user ID provided.";
+      throw new Error("Missing uid");
+    }
 
+    async function startAd() {
       try {
+        statusEl.textContent = "Contacting backend…";
+
         const res = await fetch(`${BACKEND}/start_ad?user_id=${encodeURIComponent(userId)}`);
         const data = await res.json();
+
+        if (!data.session_token) {
+          statusEl.textContent = "Error: Backend did not return a session token.";
+          return;
+        }
+
         const token = data.session_token;
 
-        // Example CPALead / video URL – you’ll replace with real one
-        const adUrl = `https://your-ad-network.com/video?subid=${encodeURIComponent(token)}`;
+        // TODO: Replace with your real video ad network URL
+        // Example CPALead format:
+        // const adUrl = `https://www.cpalead.com/video?subid=${token}`;
 
-        statusEl.textContent = "Opening video ad...";
+        const adUrl = `https://your-ad-network.com/video?subid=${token}`;
+
+        statusEl.textContent = "Redirecting to video ad…";
+
+        // Redirect user to the video ad
         window.location.href = adUrl;
-      } catch (e) {
+
+      } catch (err) {
         statusEl.textContent = "Error starting ad session.";
-        watchBtn.disabled = false;
+        console.error(err);
       }
-    };
+    }
+
+    startAd();
   </script>
 </body>
 </html>
