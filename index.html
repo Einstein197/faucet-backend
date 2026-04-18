@@ -1,116 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>KryptonLegend — Watch Ad</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Watch Ad to Unlock Faucet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #050816;
-      color: #f5f5f5;
-      font-family: system-ui, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/krypton.png">
 
-    .card {
-      background: #0b1020;
-      padding: 28px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 360px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.6);
-    }
 
-    h2 {
-      margin-top: 0;
-      color: #ff7a1a;
-    }
-
-    .loader {
-      margin-top: 20px;
-      border: 4px solid #333;
-      border-top: 4px solid #ff7a1a;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .status {
-      margin-top: 16px;
-      font-size: 15px;
-      opacity: 0.85;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="card">
-    <h2>KryptonLegend Faucet</h2>
-    <p>Preparing your video ad…</p>
-    <div class="loader"></div>
-    <div class="status" id="status">Starting session…</div>
-  </div>
-
-  <script>
-    const BACKEND = "https://faucet-backend-uvzt.onrender.com"; // your backend
-    const statusEl = document.getElementById("status");
-
-    // Read ?uid= from URL
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get("uid");
-
-    if (!userId) {
-      statusEl.textContent = "Error: No user ID provided.";
-      throw new Error("Missing uid");
-    }
-
-    async function startAd() {
-      try {
-        statusEl.textContent = "Contacting backend…";
-
-        const res = await fetch(`${BACKEND}/start_ad?user_id=${encodeURIComponent(userId)}`);
-        const data = await res.json();
-
-        if (!data.session_token) {
-          statusEl.textContent = "Error: Backend did not return a session token.";
-          return;
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        const token = data.session_token;
+        .box {
+            background: #161b22;
+            padding: 25px;
+            border-radius: 14px;
+            width: 92%;
+            max-width: 420px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.45);
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
 
-        // TODO: Replace with your real video ad network URL
-        // Example CPALead format:
-        // const adUrl = `https://www.cpalead.com/video?subid=${token}`;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        const adUrl = `https://www.cpalead.com/video?subid=${token}`;
+        .logo-img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 0 18px rgba(0,0,0,0.5);
+        }
 
-        statusEl.textContent = "Redirecting to video ad…";
+        h2 {
+            margin-top: 0;
+            font-size: 22px;
+        }
 
-        // Redirect user to the video ad
-        window.location.href = adUrl;
+        p {
+            font-size: 15px;
+            opacity: 0.85;
+        }
 
-      } catch (err) {
-        statusEl.textContent = "Error starting ad session.";
-        console.error(err);
-      }
+        iframe {
+            width: 100% !important;
+            max-width: 320px;
+            height: auto;
+            margin: 15px auto;
+            display: block;
+        }
+
+        button {
+            background: #238636;
+            border: none;
+            padding: 14px 22px;
+            color: white;
+            font-size: 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 260px;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+
+        button:disabled {
+            background: #30363d;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background: #2ea043;
+            transform: scale(1.03);
+        }
+
+        #status {
+            margin-top: 18px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+
+    <img src="/static/krypton.png" class="logo-img">
+
+
+    <h2>📺 Watch an Ad to Unlock Faucet</h2>
+    <p>Your faucet reward will unlock after completing the ad.</p>
+
+    <!-- A-ADS AD UNIT -->
+    <iframe data-aa="2433694"
+            src="//acceptable.a-ads.com/2433694/?size=Adaptive"
+            style="border:0; padding:0; overflow:hidden;">
+    </iframe>
+
+    <!-- BEGIN AADS AD UNIT 2434032 -->
+
+
+      <iframe data-aa='2434032'
+              src='//acceptable.a-ads.com/2434032/?size=Adaptive'
+                        style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'>
+
+      </iframe>
+
+
+<!-- END AADS AD UNIT 2434032 -->
+
+    <p style="font-size:14px; opacity:0.75;">
+        After you click the button, this page will open Discord automatically.
+    </p>
+
+    <button id="adButton" disabled>⏳ Please wait 20 seconds...</button>
+
+    <p id="status"></p>
+</div>
+
+<script>
+    const user_id = "{{USER_ID}}";
+    const BACKEND = "https://faucet-backend-uvzt.onrender.com";
+
+    if (!user_id) {
+        document.getElementById("status").innerText = "❌ Error: Missing user_id.";
     }
 
-    startAd();
-  </script>
+    // -----------------------------
+    // 20 SECOND LOCKOUT TIMER
+    // -----------------------------
+    let seconds = 20;
+    const btn = document.getElementById("adButton");
+
+    const timer = setInterval(() => {
+        seconds--;
+        btn.innerText = `⏳ Please wait ${seconds} seconds...`;
+
+        if (seconds <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+            btn.innerText = "I Watched the Ad";
+            btn.onclick = finishAd;
+        }
+    }, 1000);
+
+    // -----------------------------
+    // FINISH AD FUNCTION
+    // -----------------------------
+    async function finishAd() {
+        if (!user_id) return;
+
+        const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
+        if (!start.ok) {
+            document.getElementById("status").innerText = "❌ Failed to start ad session.";
+            return;
+        }
+
+        const html = await start.text();
+        const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
+
+        if (!match) {
+            document.getElementById("status").innerText = "❌ Could not read session token.";
+            return;
+        }
+
+        const session = match[1];
+        const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
+
+        if (res.ok) {
+            document.getElementById("status").innerText =
+                "✅ Ad completed! Returning to Discord...";
+
+            setTimeout(() => {
+                window.location.href = "discord://";
+            }, 1000);
+
+        } else {
+            document.getElementById("status").innerText =
+                "❌ Error completing ad. Try again.";
+        }
+    }
+</script>
+
 </body>
 </html>
