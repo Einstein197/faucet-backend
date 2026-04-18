@@ -5,64 +5,90 @@
     <title>Watch Ad to Unlock Faucet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/static/krypton.png">
-
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #0d1117;
-            color: #e6edf3;
             margin: 0;
             padding: 0;
+            background: linear-gradient(145deg, #1a0f00, #ff7a18);
+            font-family: "Inter", Arial, sans-serif;
+            color: #e6edf3;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
 
-        .box {
-            background: #161b22;
-            padding: 25px;
-            border-radius: 14px;
-            width: 92%;
-            max-width: 420px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.45);
-            text-align: center;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo-img {
-            width: 180px;
-            height: 180px;
-            object-fit: cover;
+        /* CORNER LOGOS */
+        .corner-logo {
+            position: fixed;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            margin-bottom: 20px;
-            box-shadow: 0 0 18px rgba(0,0,0,0.5);
+            object-fit: cover;
+            z-index: 9999;
         }
 
-        h2 {
-            margin-top: 0;
-            font-size: 22px;
+        .tl { top: 15px; left: 15px; }
+        .tr { top: 15px; right: 15px; }
+        .bl { bottom: 15px; left: 15px; }
+        .br { bottom: 15px; right: 15px; }
+
+        /* HEADER */
+        .header {
+            margin-top: 120px;
+            text-align: center;
         }
 
-        p {
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header p {
+            margin-top: 8px;
+            opacity: 0.75;
             font-size: 15px;
-            opacity: 0.85;
         }
 
-        iframe {
-            width: 100% !important;
-            max-width: 320px;
-            height: auto;
-            margin: 15px auto;
+        /* AD ROW */
+        .ad-row {
+            display: grid;
+            grid-template-columns: 180px auto 180px;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 40px;
+            align-items: center;
+        }
+
+        .side-ads iframe {
+            width: 100%;
+            border: none;
             display: block;
+        }
+
+        .adsterra-block {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* MAIN CONTENT */
+        .main-content-wrapper {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .main-content-text {
+            font-size: 14px;
+            opacity: 0.75;
+            margin-bottom: 16px;
         }
 
         button {
@@ -75,8 +101,6 @@
             cursor: pointer;
             width: 100%;
             max-width: 260px;
-            margin-top: 15px;
-            transition: 0.2s;
         }
 
         button:disabled {
@@ -84,47 +108,114 @@
             cursor: not-allowed;
         }
 
-        button:hover:enabled {
-            background: #2ea043;
-            transform: scale(1.03);
-        }
-
         #status {
             margin-top: 18px;
             font-size: 15px;
         }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .ad-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                max-width: 350px;
+                margin-top: 20px;
+            }
+
+            .adsterra-block {
+                display: none !important;
+            }
+
+            .corner-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .header {
+                margin-top: 80px;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
     </style>
+
+    <!-- REDIRECT SHIELD -->
+    <script>
+    (function() {
+        const blockRedirect = (prop) => {
+            try {
+                Object.defineProperty(window, prop, {
+                    configurable: false,
+                    enumerable: true,
+                    get() { return window[`__${prop}`]; },
+                    set(v) { console.warn("Blocked redirect attempt:", prop, v); }
+                });
+            } catch (e) {}
+        };
+
+        window.__location = window.location;
+        blockRedirect("location");
+
+        try {
+            Object.defineProperty(top, "location", {
+                configurable: false,
+                get() { return window.__location; },
+                set(v) { console.warn("Blocked top redirect:", v); }
+            });
+        } catch (e) {}
+
+        const originalOpen = window.open;
+        window.open = function(url) {
+            console.warn("Blocked window.open redirect:", url);
+            return null;
+        };
+    })();
+    </script>
+
 </head>
+
 <body>
 
-<div class="box">
+<!-- CORNER LOGOS -->
+<img src="/static/krypton.png" class="corner-logo tl">
+<img src="/static/krypton.png" class="corner-logo tr">
+<img src="/static/krypton.png" class="corner-logo bl">
+<img src="/static/krypton.png" class="corner-logo br">
 
-    <img src="/static/krypton.png" class="logo-img">
+<!-- HEADER -->
+<div class="header">
+    <h1>📺 Watch an Ad to Unlock Faucet</h1>
+    <p>Your faucet reward unlocks after completing the ad.</p>
+</div>
 
+<!-- AD ROW -->
+<div class="ad-row">
 
-    <h2>📺 Watch an Ad to Unlock Faucet</h2>
-    <p>Your faucet reward will unlock after completing the ad.</p>
+    <!-- LEFT A‑ADS -->
+    <div class="side-ads">
+        <iframe data-aa="2434416"
+            src="https://acceptable.a-ads.com/2434416?size=Adaptive">
+        </iframe>
+    </div>
 
-    <!-- A-ADS AD UNIT -->
-    <iframe data-aa="2433694"
-            src="//acceptable.a-ads.com/2433694/?size=Adaptive"
-            style="border:0; padding:0; overflow:hidden;">
-    </iframe>
+    <!-- ADSTERRA (DESKTOP ONLY) -->
+    <div class="adsterra-block" id="adsterraContainer"></div>
 
-    <!-- BEGIN AADS AD UNIT 2434032 -->
+    <!-- RIGHT A‑ADS -->
+    <div class="side-ads">
+        <iframe data-aa="2434032"
+            src="https://acceptable.a-ads.com/2434032?size=Adaptive">
+        </iframe>
+    </div>
 
+</div>
 
-      <iframe data-aa='2434032'
-              src='//acceptable.a-ads.com/2434032/?size=Adaptive'
-                        style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'>
-
-      </iframe>
-
-
-<!-- END AADS AD UNIT 2434032 -->
-
-    <p style="font-size:14px; opacity:0.75;">
-        After you click the button, this page will open Discord automatically.
+<!-- MAIN CONTENT -->
+<div class="main-content-wrapper">
+    <p class="main-content-text">
+        After clicking the button, this page will return you to Discord automatically.
     </p>
 
     <button id="adButton" disabled>⏳ Please wait 20 seconds...</button>
@@ -132,17 +223,33 @@
     <p id="status"></p>
 </div>
 
+<!-- DESKTOP‑ONLY ADSTERRA LOADER -->
+<script>
+(function() {
+    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+        const container = document.getElementById("adsterraContainer");
+
+        const s = document.createElement("script");
+        s.async = true;
+        s.setAttribute("data-cfasync", "false");
+        s.src = "https://glamournakedemployee.com/1b29b818614dfdaded3b47b2f2ee7524/invoke.js";
+
+        const d = document.createElement("div");
+        d.id = "container-1b29b818614dfdaded3b47b2f2ee7524";
+
+        container.appendChild(s);
+        container.appendChild(d);
+    }
+})();
+</script>
+
+<!-- BACKEND LOGIC -->
 <script>
     const user_id = "{{USER_ID}}";
     const BACKEND = "https://faucet-backend-uvzt.onrender.com";
 
-    if (!user_id) {
-        document.getElementById("status").innerText = "❌ Error: Missing user_id.";
-    }
-
-    // -----------------------------
-    // 20 SECOND LOCKOUT TIMER
-    // -----------------------------
     let seconds = 20;
     const btn = document.getElementById("adButton");
 
@@ -154,44 +261,46 @@
             clearInterval(timer);
             btn.disabled = false;
             btn.innerText = "I Watched the Ad";
-            btn.onclick = finishAd;
         }
     }, 1000);
 
-    // -----------------------------
-    // FINISH AD FUNCTION
-    // -----------------------------
+    btn.addEventListener("click", finishAd);
+
     async function finishAd() {
-        if (!user_id) return;
+        btn.disabled = true;
+        btn.innerText = "Processing...";
 
-        const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
-        if (!start.ok) {
-            document.getElementById("status").innerText = "❌ Failed to start ad session.";
-            return;
-        }
+        try {
+            const start = await fetch(`${BACKEND}/start_ad?user_id=${user_id}`);
+            const html = await start.text();
 
-        const html = await start.text();
-        const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
+            const match = html.match(/session_token=([A-Za-z0-9_\-]+)/);
+            if (!match) {
+                document.getElementById("status").innerText =
+                    "❌ Could not get session token.";
+                btn.disabled = false;
+                btn.innerText = "Try Again";
+                return;
+            }
 
-        if (!match) {
-            document.getElementById("status").innerText = "❌ Could not read session token.";
-            return;
-        }
+            const session = match[1];
+            const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
 
-        const session = match[1];
-        const res = await fetch(`${BACKEND}/ad_complete?session_token=${session}`);
-
-        if (res.ok) {
+            if (res.ok) {
+                document.getElementById("status").innerText =
+                    "✅ Ad completed! Returning to Discord...";
+                setTimeout(() => window.location.href = "discord://", 1000);
+            } else {
+                document.getElementById("status").innerText =
+                    "❌ Error completing ad.";
+                btn.disabled = false;
+                btn.innerText = "Try Again";
+            }
+        } catch (err) {
             document.getElementById("status").innerText =
-                "✅ Ad completed! Returning to Discord...";
-
-            setTimeout(() => {
-                window.location.href = "discord://";
-            }, 1000);
-
-        } else {
-            document.getElementById("status").innerText =
-                "❌ Error completing ad. Try again.";
+                "❌ Network error.";
+            btn.disabled = false;
+            btn.innerText = "Try Again";
         }
     }
 </script>
