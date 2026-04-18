@@ -298,7 +298,11 @@
             if (res.ok) {
                 document.getElementById("status").innerText =
                     "✅ Ad completed! Returning to Discord...";
-                setTimeout(() => window.location.href = "discord://", 2000);
+                setTimeout(() => {
+                    window.location.href = "discord://";
+                    window.close();
+                }, 500);
+
             } else {
                 document.getElementById("status").innerText =
                     "❌ Error completing ad.";
