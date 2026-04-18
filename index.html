@@ -62,10 +62,17 @@
             max-width: 1400px;
             margin-top: 40px;
             align-items: center;
+            overflow: visible !important;
+        }
+
+        .side-ads {
+            min-height: 250px;
+            overflow: visible !important;
         }
 
         .side-ads iframe {
             width: 100%;
+            height: 250px;
             border: none;
             display: block;
         }
@@ -193,22 +200,22 @@
 <!-- AD ROW -->
 <div class="ad-row">
 
-    <!-- LEFT A‑ADS (REPLACED WITH 2434870) -->
+    <!-- LEFT A‑ADS (MAX EARNINGS VERSION) -->
     <div class="side-ads">
         <iframe data-aa="2434870"
-            src="//acceptable.a-ads.com/2434870/?size=Adaptive"
-            style="border:0; padding:0; width:100%; height:auto; overflow:hidden; display:block;">
+            src="//acceptable.a-ads.com/2434870?size=300x250"
+            style="width:100%; height:250px; border:0; padding:0; display:block;">
         </iframe>
     </div>
-
 
     <!-- ADSTERRA (DESKTOP ONLY) -->
     <div class="adsterra-block" id="adsterraContainer"></div>
 
-    <!-- RIGHT A‑ADS -->
+    <!-- RIGHT A‑ADS (UNCHANGED) -->
     <div class="side-ads">
         <iframe data-aa="2434032"
-            src="https://acceptable.a-ads.com/2434032?size=Adaptive">
+            src="https://acceptable.a-ads.com/2434032?size=Adaptive"
+            style="width:100%; height:250px; border:0; padding:0; display:block;">
         </iframe>
     </div>
 
@@ -291,7 +298,7 @@
             if (res.ok) {
                 document.getElementById("status").innerText =
                     "✅ Ad completed! Returning to Discord...";
-                setTimeout(() => window.location.href = "discord://", 1000);
+                setTimeout(() => window.location.href = "discord://", 2000);
             } else {
                 document.getElementById("status").innerText =
                     "❌ Error completing ad.";
